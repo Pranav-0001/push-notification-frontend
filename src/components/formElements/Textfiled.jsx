@@ -8,7 +8,6 @@ export default function Textfiled({
   touched,
   ...rest
 }) {
-  console.log({ touched });
   return (
     <>
       <p>

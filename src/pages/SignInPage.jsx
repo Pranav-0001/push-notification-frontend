@@ -16,7 +16,7 @@ export default function SignInPage() {
   });
   return (
     <div className="w-full h-[100vh] flex justify-center items-center px-2">
-      <div className="border rounded-md shadow h-96 w-full sm:w-1/2 md:w-1/3 ">
+      <div className="border rounded-md shadow h-80 w-full sm:w-1/2 md:w-1/3 ">
         <h1 className="text-2xl text-center py-4">Sign In</h1>
 
         <Formik
