@@ -1,12 +1,20 @@
 import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
   const token = sessionStorage.getItem("currentUser");
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  if (!token) {
-    Navigate({to:"/signin"})
+  // Check if the current route is either "signin" or "signup"
+  const isSignInOrSignUp =
+    location.pathname.includes("/signin") ||
+    location.pathname.includes("/signup");
+
+  if (token && isSignInOrSignUp) {
+    Navigate({ to: "/" });
+    return null;
+  } else if (!token) {
+    Navigate({ to: "/signin" });
     return null;
   } else {
     return children;

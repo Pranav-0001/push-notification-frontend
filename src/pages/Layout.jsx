@@ -11,8 +11,22 @@ export default function Layout() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/signin"
+          element={
+            <PrivateRoute>
+              <SignInPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PrivateRoute>
+              <SignupPage />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/"
           element={
