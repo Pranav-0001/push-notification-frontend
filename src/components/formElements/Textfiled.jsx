@@ -9,7 +9,7 @@ export default function Textfiled({
   ...rest
 }) {
   return (
-    <>
+    <div>
       <p>
         {label} {required && <span className="text-red-600">*</span>}
       </p>
@@ -22,6 +22,6 @@ export default function Textfiled({
         {...rest}
       />
       {touched && error && <p className="text-xs text-red-600">{error}</p>}
-    </>
+    </div>
   );
 }

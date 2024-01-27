@@ -4,6 +4,9 @@ import "./App.css";
 import Layout from "./pages/Layout";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import Modals from "./components/modals/Modals";
 
 function App() {
   const queryClient = new QueryClient({
@@ -18,9 +21,12 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <Layout />
-        </QueryClientProvider>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <Layout />
+            <Modals/>
+          </QueryClientProvider>
+        </Provider>
       </BrowserRouter>
     </>
   );

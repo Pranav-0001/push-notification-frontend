@@ -13,10 +13,12 @@ const PrivateRoute = ({ children }) => {
   if (token && isSignInOrSignUp) {
     Navigate({ to: "/" });
     return null;
-  } else if (!token) {
+  } else if (!token && isSignInOrSignUp) {
+    return children;
+  }else if(!token){
     Navigate({ to: "/signin" });
-    return null;
-  } else {
+  }
+   else {
     return children;
   }
 };

@@ -4,8 +4,26 @@ import Textfiled from "../components/formElements/Textfiled";
 import * as Yup from "yup";
 import Button from "../components/formElements/Button";
 import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../api";
 export default function SignInPage() {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
+  const loginMutation = useLoginMutation({
+    onSuccessCallback: (data) => {
+      sessionStorage.setItem(
+        "currentUser",
+        JSON.stringify({
+          status: data.data?.status,
+          token: data.data?.token,
+          user: {
+            name: data.data?.user?.name,
+            email: data.data?.user?.email,
+            _id: data.data?.user?._id,
+          },
+        })
+      );
+    },
+    onErrorCallback: (err) => {},
+  });
   const SigninSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email")
@@ -23,10 +41,10 @@ export default function SignInPage() {
           initialValues={{ email: "", password: "" }}
           validationSchema={SigninSchema}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
+            loginMutation.mutate({
+              email: values?.email,
+              password: values?.password,
+            });
           }}
         >
           {({
@@ -37,7 +55,6 @@ export default function SignInPage() {
             handleBlur,
             handleSubmit,
             isSubmitting,
-            /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
               <div className="px-20">
@@ -75,7 +92,10 @@ export default function SignInPage() {
         <div className="px-20">
           <p>
             Don't have an account ?{" "}
-            <span className="underline text-blue-500 cursor-pointer" onClick={()=>navigate("/signup")}>
+            <span
+              className="underline text-blue-500 cursor-pointer"
+              onClick={() => navigate("/signup")}
+            >
               SignUp
             </span>
           </p>
