@@ -6,9 +6,27 @@ import { useDispatch } from "react-redux";
 import { closeModal } from "../../redux/modalSlice";
 import FileUpload from "../formElements/FileUpload";
 import { Formik } from "formik";
+import useCreatePushNotificationMutation from "../../api/createPushNotificationMutation";
+import { Bounce, toast } from "react-toastify";
 
 export default function CreateOrUpdateModal({}) {
   const dispatch = useDispatch();
+  const createPushNotificationMutation = useCreatePushNotificationMutation({
+    onSuccessCallback: (data) => {
+      toast.success('Push notification created successfully', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        transition: Bounce,
+        });
+        dispatch(closeModal())
+    },
+    onErrorCallback: (data) => {},
+  });
   return (
     <div className="min-h-96 w-3/5 bg-white rounded-xl shadow-lg ">
       <div className="py-3 px-6 border-b-2 flex justify-between">
@@ -40,17 +58,18 @@ export default function CreateOrUpdateModal({}) {
                 {
                   title: values?.button1,
                   action: values?.action1,
-                  type: "button",
+                  type: values?.button1?"button":"",
                 },
                 {
                   title: values?.button2,
                   action: values?.action2,
-                  type: "button",
-                }
+                  type: values?.button2?"button":"",
+                },
               ],
             },
           };
-          console.log({payload});
+          console.log({ payload });
+          createPushNotificationMutation.mutate({...payload})
         }}
       >
         {({
