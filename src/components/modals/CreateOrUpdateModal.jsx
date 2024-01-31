@@ -8,9 +8,11 @@ import FileUpload from "../formElements/FileUpload";
 import { Formik } from "formik";
 import useCreatePushNotificationMutation from "../../api/createPushNotificationMutation";
 import { Bounce, toast } from "react-toastify";
+import useGetAllPushNotificationByIdQuery from "../../api/getAllPushNotificationByUserId";
 
 export default function CreateOrUpdateModal({}) {
   const dispatch = useDispatch();
+  const getAllPushNotificationByUser=useGetAllPushNotificationByIdQuery()
   const createPushNotificationMutation = useCreatePushNotificationMutation({
     onSuccessCallback: (data) => {
       toast.success('Push notification created successfully', {
@@ -24,6 +26,7 @@ export default function CreateOrUpdateModal({}) {
         transition: Bounce,
         });
         dispatch(closeModal())
+        getAllPushNotificationByUser.refetch()
     },
     onErrorCallback: (data) => {},
   });

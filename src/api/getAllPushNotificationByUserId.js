@@ -1,23 +1,13 @@
 import { api } from "./axios";
-import { useMutation } from "react-query";
+import { useQuery } from "react-query";
 
-export default function usegetAllPushNotificationByUserId({
-  onSuccessCallback,
-  onErrorCallback,
-}) {
-  return useMutation({
-    mutationFn: async () => {
-      const res = await api({
-        url: "/getAllPushNotificationByUser",
-        method: "GET",
-      });
-      return res;
-    },
-    onSuccess: (data) => {
-      onSuccessCallback(data);
-    },
-    onError: (error) => {
-      onErrorCallback(error);
-    },
-  });
+export default function useGetAllPushNotificationByIdQuery() {
+  async function getAllPushNotifications() {
+    const res = await api({
+      method: "get",
+      url: `/getAllPushNotificationByUser`,
+    });
+    return res.data;
+  }
+  return useQuery([`getAllPushNotifications`], getAllPushNotifications);
 }
