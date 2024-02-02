@@ -7,7 +7,6 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     let currentUser = sessionStorage.getItem("currentUser");
-    console.log({ currentUser });
     if (currentUser) {
       currentUser = JSON.parse(currentUser);
       config.headers = config.headers || {};

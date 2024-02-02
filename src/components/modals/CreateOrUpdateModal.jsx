@@ -10,7 +10,8 @@ import useCreatePushNotificationMutation from "../../api/createPushNotificationM
 import { Bounce, toast } from "react-toastify";
 import useGetAllPushNotificationByIdQuery from "../../api/getAllPushNotificationByUserId";
 
-export default function CreateOrUpdateModal({}) {
+export default function CreateOrUpdateModal({edit,notification}) {
+  console.log({edit,notification});
   const dispatch = useDispatch();
   const getAllPushNotificationByUser=useGetAllPushNotificationByIdQuery()
   const createPushNotificationMutation = useCreatePushNotificationMutation({

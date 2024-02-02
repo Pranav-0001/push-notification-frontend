@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 export default function Navbar() {
   
   const user= useSelector(state=>state.user)
-  console.log({user});
   return (
     <div className="h-14 bg-black flex justify-between px-4 absolute w-full">
       <div className="h-full flex items-center">
