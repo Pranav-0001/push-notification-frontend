@@ -24,14 +24,18 @@ export default function FileUpload({
     },
     onErrorCallback: (data) => {},
   });
+
   const handleFileUpload = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
     imageUploadMutaion.mutate(formData);
   };
   useEffect(() => {
-    onChange(url)
+    onChange(url);
   }, [url]);
+  useEffect(() => {
+    if (value !== "") setURl(value);
+  }, []);
 
   return (
     <div>
@@ -42,7 +46,6 @@ export default function FileUpload({
         <div className=" h-32 flex justify-center  relative overflow-hidden">
           <UploadLoader />
         </div>
-        
       ) : (
         <div
           style={{

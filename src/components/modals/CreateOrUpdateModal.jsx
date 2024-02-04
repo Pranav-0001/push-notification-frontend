@@ -2,21 +2,23 @@ import React from "react";
 import Textfiled from "../formElements/Textfiled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { closeModal } from "../../redux/modalSlice";
 import FileUpload from "../formElements/FileUpload";
 import { Formik } from "formik";
 import useCreatePushNotificationMutation from "../../api/createPushNotificationMutation";
 import { Bounce, toast } from "react-toastify";
 import useGetAllPushNotificationByIdQuery from "../../api/getAllPushNotificationByUserId";
+import useUpdatePushNotificationMutation from "../../api/updatePushNotificationMutation";
 
-export default function CreateOrUpdateModal({edit,notification}) {
-  console.log({edit,notification});
+export default function CreateOrUpdateModal({ edit, notification }) {
+  console.log({ edit, notification });
+  const notificationData = notification?.data;
   const dispatch = useDispatch();
-  const getAllPushNotificationByUser=useGetAllPushNotificationByIdQuery()
+  const getAllPushNotificationByUser = useGetAllPushNotificationByIdQuery();
   const createPushNotificationMutation = useCreatePushNotificationMutation({
     onSuccessCallback: (data) => {
-      toast.success('Push notification created successfully', {
+      toast.success("Push notification created successfully", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -25,30 +27,56 @@ export default function CreateOrUpdateModal({edit,notification}) {
         draggable: true,
         theme: "colored",
         transition: Bounce,
-        });
-        dispatch(closeModal())
-        getAllPushNotificationByUser.refetch()
+      });
+      dispatch(closeModal());
+      getAllPushNotificationByUser.refetch();
     },
     onErrorCallback: (data) => {},
   });
+  const updatePushNotificationMutation = useUpdatePushNotificationMutation({
+    onSuccessCallback: (data) => {
+      toast.success("Push notification updated successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        transition: Bounce,
+      });
+      dispatch(closeModal());
+      getAllPushNotificationByUser.refetch();
+    },
+    onErrorCallback: (error) => {},
+  });
+  const user = useSelector;
   return (
     <div className="min-h-96 w-3/5 bg-white rounded-xl shadow-lg ">
       <div className="py-3 px-6 border-b-2 flex justify-between">
-        <h1 className="text-xl font-bold">Create Push Notification</h1>
+        <h1 className="text-xl font-bold">
+          {edit ? "Edit" : "Create"} Push Notification
+        </h1>
         <button className="font-bold" onClick={() => dispatch(closeModal())}>
           <FontAwesomeIcon className="text-xl font-bold" icon={faXmark} />
         </button>
       </div>
       <Formik
         initialValues={{
-          title: "",
-          description: "",
-          icon: "",
-          image: "",
-          button1: "",
-          action1: "",
-          button2: "",
-          action2: "",
+          title: notificationData?.title ?? "",
+          description: notificationData?.options?.body ?? "",
+          icon: notificationData?.options?.icon ?? "",
+          image: notificationData?.options?.image ?? "",
+          button1: notificationData?.options?.actions?.[0]?.title ?? "",
+          action1:
+            notificationData?.options?.actions?.[0]?.action?.split(
+              "redirect_"
+            )[1] ?? "",
+          button2: notificationData?.options?.actions?.[1]?.title ?? "",
+          action2:
+            notificationData?.options?.actions?.[1]?.action?.split(
+              "redirect_"
+            )[1] ?? "",
         }}
         onSubmit={(values, { setSubmitting }) => {
           console.log({ values });
@@ -61,19 +89,26 @@ export default function CreateOrUpdateModal({edit,notification}) {
               actions: [
                 {
                   title: values?.button1,
-                  action: values?.action1,
-                  type: values?.button1?"button":"",
+                  action: `redirect_${values?.action1}`,
+                  type: values?.button1 ? "button" : "",
                 },
                 {
                   title: values?.button2,
-                  action: values?.action2,
-                  type: values?.button2?"button":"",
+                  action: `redirect_${values?.action2}`,
+                  type: values?.button2 ? "button" : "",
                 },
               ],
             },
           };
           console.log({ payload });
-          createPushNotificationMutation.mutate({...payload})
+          if (edit) {
+            updatePushNotificationMutation.mutate({
+              ...payload,
+              notificationId: notification?._id,
+            });
+          } else {
+            createPushNotificationMutation.mutate({ ...payload });
+          }
         }}
       >
         {({
@@ -87,6 +122,7 @@ export default function CreateOrUpdateModal({edit,notification}) {
           setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
+            {console.log({ values })}
             <>
               <div className="grid grid-cols-2 mt-2 h-96 overflow-y-scroll ">
                 <div className="h-10 px-8">
